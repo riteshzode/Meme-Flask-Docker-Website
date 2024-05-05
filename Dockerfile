@@ -1,13 +1,17 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.8-slim-buster
+FROM python:3.10-alpine
 
-WORKDIR /python-docker
+WORKDIR /app
 
-COPY requirements.txt requirements.txt
+COPY requirements.txt /app
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip3 install -r requirements.txt
 
-RUN pip3 install -r requirements.txt
+COPY . /app
 
-COPY . .
+EXPOSE 5000
 
+# ENTRYPOINT ["python3"]
+# CMD ["app.py"]
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
